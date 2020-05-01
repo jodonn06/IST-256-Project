@@ -1,33 +1,34 @@
-pip install praw
-
-import praw
-
-input_username = input("Please enter your Reddit username: ")
-input_password = input("Please enter your Reddit password: ")
-input_client_id = input("Please enter your Reddit client id: ")
-input_client_secret = input("Please enter your Reddit client scret: ")
+#Print greeting
 
 def bot_login():
     print("Logging in...")
-    r = praw.Reddit(username = str(input_username),
-            password = str(input_password),
-            client_id = str(input_client_id),
-            client_secret = str(input_client_secret),
-            user_agent = "cuse comment responder v0.1")
+    r = praw.Reddit(username = "jodonn06",
+            password = "256Project",
+            client_id = "tU3tBNn2aO_cEQ",
+            client_secret = "DFlHFDIlDkW09iIL9usCtknD7ss",
+            user_agent = "comment responder v0.1")
     print("Logged in")
     
     return r
 
 r = bot_login()
 
-input_comment = input("What would you like to comment regarding Coach Boeheim? ")
+#input_subreddit the user wants to use
 
-def run_once.run_bot(r):
+#input_comment      What the user wants to see if someone commented about
+
+input_post = input(f"What would you like to comment regarding (str(input_comment))")
+
+def run_bot(r):
     print("Looking through comments...")
     for comment in r.subreddit('cuse').comments(limit=100):
-        if "Boeheim" in comment.body:
+        if str(input_comment) in comment.body:
             print("Comment found!")
             comment.reply(str(input_comment))
             print("Replied to comment")
 
 run_bot(r)
+
+#Need the bot to stop after responding to one comment
+#Need a message for if no comment is found and to go back to finding a new input_comment
+#provide a link to where the post was made
