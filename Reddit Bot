@@ -1,5 +1,5 @@
-import praw
-import time
+import praw #Python Reddit API Wrapper
+import time 
 import os
 
 def bot_login():
@@ -14,7 +14,7 @@ def bot_login():
     return r
 
 def run_bot(r, comments_replied_to):
-    print("Searching last 100 comments...")
+    print("Searching last 500 comments...")
 
     for comment in r.subreddit('cuse').comments(limit=100):
         if "Boeheim" in comment.body and comment.id not in comments_replied_to and comment.author != r.user.me():
@@ -51,3 +51,6 @@ print(comments_replied_to)
 
 while True:
     run_bot(r, comments_replied_to)
+    if #what? == what?:
+        break
+    print("Try again in 10 minutes")
