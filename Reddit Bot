@@ -13,8 +13,6 @@ def bot_login():
 
 r = bot_login()
 
-input_post = input(f"What would you like to comment regarding (str(input_comment))")
-
 def run_bot(r):
     print("Looking through comments...")
     for comment in r.subreddit('cuse').comments(limit=100):
