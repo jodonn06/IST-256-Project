@@ -2,7 +2,7 @@ import praw #Python Reddit API Wrapper
 import time #The number of seconds passed
 import os #Provides functions for interacting with the operating system
 
-def bot_login(): #Logs in the bot
+def bot_login(): 
     print("Logging in...")
     r = praw.Reddit(username = "jodonn06", 
                 password = "256Project",
@@ -17,7 +17,9 @@ def run_bot(r, comments_replied_to):
     print("Searching last 500 comments...")
 
     for comment in r.subreddit('cuse').comments(limit=100):
-        if "Boeheim" in comment.body and comment.id not in comments_replied_to and comment.author != r.user.me(): #A comment with a "Boeheim" is found and an ID is assigned to the comment.  Program will not comment on same comment again.
+        if "Boeheim" in comment.body and comment.id not in comments_replied_to and comment.author != r.user.me():
+         #A comment with a "Boeheim" is found and an ID is assigned to the comment.
+         #Program will not comment on the same comment again.
             print("String found in comment " + comment.id)
             comment.reply("GO CUSE!") #What the account posts on Reddit
             x = print("Replied to comment " + comment.id)
@@ -45,9 +47,15 @@ def get_saved_comments():
 
     return comments_replied_to
 
-r = bot_login() #Logs in the bot
+r = bot_login()
 comments_replied_to = get_saved_comments()
 print(comments_replied_to)
 
 while True:
     run_bot(r, comments_replied_to) #Runs bot
+    
+#Regardless of how we edit the "while True" statement, we always got the RATELIMIT Error.
+#This is because Reddit will not allow a bot to comment the same thing multiple times at once.
+#There needs to be a 10 minute span between the posts.
+#We tried assigning a count to the amount of executions, but that disturbed the comments_replied_to.txt list when the program ran again.
+#We discussed the issue with our TA and no solution was made.  We believe that it may be impossible due to Reddit's rules on bots.
