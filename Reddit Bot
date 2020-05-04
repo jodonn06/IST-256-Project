@@ -13,16 +13,6 @@ def bot_login():
 
 r = bot_login()
 
-def run_bot(r):
-    print("Looking through comments...")
-    for comment in r.subreddit('cuse').comments(limit=100):
-        if "Syracuse" in comment.body:
-            print("Comment found!")
-            comment.reply("GO CUSE!")
-            print("Replied to comment")
-
-run_bot(r)
-
 FILE_NAME = 'last_seen_id.txt'
 
 def retrieve_last_seen_id(file_name):
@@ -47,6 +37,8 @@ def reply_to_reddit():
     for mention in mentions:
         print(str(mention.id) + ' - ' + mention.full_text, flush=True) last_seen_id = mention.id
         store_last_seen_id(last_seen_id, FILE_NAME)
-    if 'Cuse' in mention.full_text.lower():
-        print('found Cuse', flush=True) print('replying...', flush=True) api.update_status('@' + mention.user.screen_name +
+        if 'Cuse' in mention.full_text.lower():
+        print('found Cuse', flush=True)
+        print('replying...', flush=True)
+        api.update_status('@' + mention.user.screen_name +
                     'GO CUSE!', mention.id)
