@@ -1,44 +1,53 @@
 import praw
+import time
+import os
 
 def bot_login():
     print("Logging in...")
     r = praw.Reddit(username = "jodonn06",
-            password = "256Project",
-            client_id = "tU3tBNn2aO_cEQ",
-            client_secret = "DFlHFDIlDkW09iIL9usCtknD7ss",
-            user_agent = "comment responder v0.1")
-    print("Logged in")
-    
+                password = "256Project",
+                client_id = "tU3tBNn2aO_cEQ",
+                client_secret = "DFlHFDIlDkW09iIL9usCtknD7ss",
+                user_agent = "Cuse Reddit Comment Bot v1.0")
+    print("Logged in!")
+
     return r
 
+def run_bot(r, comments_replied_to):
+    print("Searching last 100 comments...")
+
+    for comment in r.subreddit('cuse').comments(limit=100):
+        if "Boeheim" in comment.body and comment.id not in comments_replied_to and comment.author != r.user.me():
+            print("String found in comment " + comment.id)
+            comment.reply("GO CUSE!")
+            print("Replied to comment " + comment.id)
+
+            comments_replied_to.append(comment.id)
+
+            with open("comments_replied_to.txt", "a") as f:
+                f.write(comment.id + "\n")
+
+        print("Search Completed")
+
+    print(comments_replied_to)
+
+    print("Sleeping for 10 minutes...")
+    time.sleep(600)
+
+def get_saved_comments():
+    if not os.path.isfile("comments_replied_to.txt"):
+        comments_replied_to = []
+    else:
+            with open("comments_replied_to.txt", "r") as f:
+                comments_replied_to = f.read()
+                comments_replied_to = comments_replied_to.split("\n")
+                comments_replied_to = filter(None, comments_replied_to)
+
+    return comments_replied_to
+
 r = bot_login()
+comments_replied_to = get_saved_comments()
+print(comments_replied_to)
 
-FILE_NAME = 'last_seen_id.txt'
-
-def retrieve_last_seen_id(file_name):
-    f_read = open(file_name, 'r')
-    last_seen_id = int(f_read.read().strip())
-    f_read.close()
-    return last_seen_id
-
-def store_last_seen_id(last_seen_id, file_name):
-    f_write = open(file_name, 'w')
-    f_write.write(str(last_seen_id))
-    f_write.close()
-    return
-
-def reply_to_reddit():
-    print('retrieving and replying to reddit post', flush=True)
-    last_seen_id = retrieve_last_seen_id(FILE_NAME)
-    mentions = api.mentions_timeline( #this shoud be altered to reddit
-                        last_seen_id,
-                        tweet_mode='extended')
-    
-    for mention in mentions:
-        print(str(mention.id) + ' - ' + mention.full_text, flush=True) last_seen_id = mention.id
-        store_last_seen_id(last_seen_id, FILE_NAME)
-        if 'Cuse' in mention.full_text.lower():
-        print('found Cuse', flush=True)
-        print('replying...', flush=True)
-        api.update_status('@' + mention.user.screen_name +
-                    'GO CUSE!', mention.id)
+while True:
+    run_bot(r, comments_replied_to)
