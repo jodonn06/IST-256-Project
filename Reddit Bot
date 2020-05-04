@@ -1,4 +1,4 @@
-#Print greeting
+import praw
 
 def bot_login():
     print("Logging in...")
@@ -13,22 +13,42 @@ def bot_login():
 
 r = bot_login()
 
-#input_subreddit the user wants to use
-
-#input_comment      What the user wants to see if someone commented about
-
 input_post = input(f"What would you like to comment regarding (str(input_comment))")
 
 def run_bot(r):
     print("Looking through comments...")
     for comment in r.subreddit('cuse').comments(limit=100):
-        if str(input_comment) in comment.body:
+        if "Syracuse" in comment.body:
             print("Comment found!")
-            comment.reply(str(input_comment))
+            comment.reply("GO CUSE!")
             print("Replied to comment")
 
 run_bot(r)
 
-#Need the bot to stop after responding to one comment
-#Need a message for if no comment is found and to go back to finding a new input_comment
-#provide a link to where the post was made
+FILE_NAME = 'last_seen_id.txt'
+
+def retrieve_last_seen_id(file_name):
+    f_read = open(file_name, 'r')
+    last_seen_id = int(f_read.read().strip())
+    f_read.close()
+    return last_seen_id
+
+def store_last_seen_id(last_seen_id, file_name):
+    f_write = open(file_name, 'w')
+    f_write.write(str(last_seen_id))
+    f_write.close()
+    return
+
+def reply_to_reddit():
+    print('retrieving and replying to reddit post', flush=True)
+    last_seen_id = retrieve_last_seen_id(FILE_NAME)
+    mentions = api.mentions_timeline( #this shoud be altered to reddit
+                        last_seen_id,
+                        tweet_mode='extended')
+    
+    for mention in mentions:
+        print(str(mention.id) + ' - ' + mention.full_text, flush=True) last_seen_id = mention.id
+        store_last_seen_id(last_seen_id, FILE_NAME)
+    if 'Cuse' in mention.full_text.lower():
+        print('found Cuse', flush=True) print('replying...', flush=True) api.update_status('@' + mention.user.screen_name +
+                    'GO CUSE!', mention.id)
